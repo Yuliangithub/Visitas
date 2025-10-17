@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Listado de Visitas</title>
+  <link rel="stylesheet" href="css/visitas.css">
+
+
+</head>
+
+  <nav class="navbar">
+    <h2>Historial de Visitas</h2>
+    <div>
+      <a href="index.php" class="btn">Dashboard</a>
+      <a href="registro.html" class="btn">Nueva Visita</a>
+      <a href="historial.html" class="btn">Inspecciones</a>
+    </div>
+  </nav>
+  
+<body>
+  <h2>Listado de Visitas</h2>
+  <div class="historial-tabs">
+  <button id="btnPendientes" class="tab-btn active">Pendientes</button>
+  <button id="btnCumplidas" class="tab-btn">Cumplidas</button>
+</div>
+
+<div id="historial" class="tab-content visible"></div>
+<div id="historialCumplidas" class="tab-content" style="display:none"></div>
+  <div id="contenedor"></div>
+
+<script src="js/visitas.js"></script>
+</body>
+</html>

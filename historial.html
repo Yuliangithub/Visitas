@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial de Aspectos</title>
+  <link rel="stylesheet" href="css/historial.css">
+  <!-- FontAwesome para íconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <h2>Historial de Aspectos</h2>
+    <div>
+      <a href="index.php" class="btn">Dashboard</a>
+      <a href="registro.html" class="btn">Nueva Visita</a>
+      <a href="visitas.html" class="btn">visitas</a>
+    </div>
+  </nav>
+
+  <!-- Contenedor de filtros -->
+  <main>
+    <div class="filtros">
+      <label for="filterEstado">Estado:</label>
+      <select id="filterEstado">
+        <option value="todos">Todos</option>
+        <option value="CUMPLE">Cumple</option>
+        <option value="NO CUMPLE">No Cumple</option>
+        <option value="PARCIAL">Parcial</option>
+      </select>
+
+      <label for="filterResponsable">Responsable:</label>
+      <input type="text" id="filterResponsable" placeholder="Buscar por responsable">
+    </div>
+    
+<div class="historial-tabs">
+  <button id="btnPendientes" class="tab-btn active">Pendientes</button>
+  <button id="btnCumplidas" class="tab-btn">Cumplidas</button>
+</div>
+
+<div id="historial" class="tab-content visible"></div>
+<div id="historialCumplidas" class="tab-content" style="display:none"></div>
+
+    <!-- Contenedor de datos -->
+    <div id="historial"></div>
+  </main>
+ <!-- Modal para subir evidencia -->
+<div id="modalEvidencia" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h3>Subir Evidencia de Cumplimiento</h3>
+    <form id="formEvidencia" enctype="multipart/form-data">
+      <!-- 🔹 este hidden debe tener el name correcto -->
+      <input type="hidden" name="evaluacion_id" id="evalId" value="">
+      
+      <!-- 🔹 este input debe llamarse igual que esperas en PHP -->
+      <input type="file" name="evidencia" required>
+      <br><br>
+      <button type="submit">Subir</button>
+      <button type="button" onclick="cerrarModal()">Cancelar</button>
+    </form>
+  </div>
+</div>
+
+  <script src="js/historial.js"></script>
+</body>
+</html>

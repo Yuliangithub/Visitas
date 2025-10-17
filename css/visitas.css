@@ -1,0 +1,214 @@
+/* --- Tipografía y Variables --- */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+:root {
+  --color-primario: #005A9C;
+  --color-fondo: #f4f7f9;
+  --color-contenedor: #ffffff;
+  --color-texto: #333333;
+  --color-borde: #e0e0e0;
+  --sombra-caja: 0 4px 8px rgba(0, 0, 0, 0.05);
+
+  --color-verde: #28a745;
+  --color-amarillo: #ffc107;
+  --color-rojo: #dc3545;
+  --color-gris: #6c757d;
+}
+
+/* --- Base --- */
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  margin: 0;
+
+}
+
+/* --- Navbar --- */
+.navbar {
+  background: var(--color-primario);
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar .btn {
+  color: white;
+  text-decoration: none;
+  margin-left: 15px;
+  font-weight: bold;
+}
+
+.navbar .btn:hover {
+  text-decoration: underline;
+}
+
+/* --- Título Principal --- */
+h2 {
+  text-align: center;
+  color: var(--color-primario);
+  margin-bottom: 24px;
+  font-size: 2em;
+}
+
+/* --- Tabs de Historial --- */
+.historial-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.tab-btn {
+  padding: 8px 18px;
+  background: #eee;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.tab-btn.active {
+  background: var(--color-verde);
+  color: white;
+}
+
+.tab-content {
+  margin-top: 10px;
+}
+
+/* --- Bloques de Visitas (Acordeón) --- */
+.visita-group {
+  background-color: var(--color-contenedor);
+  border-radius: 8px;
+  box-shadow: var(--sombra-caja);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+/* Encabezado de cada visita */
+.visita-header {
+  background: #f3f3f3;
+  padding: 12px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+}
+
+.visita-header:hover {
+  background: #e9e9e9;
+}
+
+.visita-header small {
+  color: #777;
+  font-weight: normal;
+  margin-left: 8px;
+}
+
+/* Contenido expandible */
+.visita-content {
+  display: none;
+  overflow-x: auto;
+  margin-top: 8px;
+  padding: 10px;
+  border-top: 1px solid var(--color-borde);
+  background: white;
+}
+
+.visita-content.visible {
+  display: block;
+}
+
+/* --- Tabla dentro de las visitas --- */
+.visita-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+  font-size: 0.85em;
+  min-width: 1000px; /* previene rotura en pantallas estrechas */
+}
+
+.visita-content th,
+.visita-content td {
+  border: 1px solid #dcdcdc;
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+  word-wrap: break-word;
+}
+
+.visita-content thead th {
+  background-color: #f8f9fa;
+  font-weight: 700;
+  color: var(--color-primario);
+  text-transform: uppercase;
+  font-size: 0.8em;
+}
+
+.visita-content tbody tr:nth-of-type(even) {
+  background-color: #f8f9fa;
+}
+
+.visita-content tbody tr:hover {
+  background-color: #eef2f6;
+}
+
+/* --- Badges (estados) --- */
+.badge {
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 0.8em;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.badge.verde { background-color: var(--color-verde); }
+.badge.amarillo { background-color: var(--color-amarillo); color: #333; }
+.badge.rojo { background-color: var(--color-rojo); }
+.badge.gris { background-color: var(--color-gris); }
+
+/* --- Enlaces de evidencia --- */
+.visita-content a {
+  color: var(--color-primario);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.visita-content a:hover {
+  text-decoration: underline;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  body {
+    padding: 12px;
+  }
+
+  h2 {
+    font-size: 1.5em;
+  }
+
+  .visita-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .visita-content table {
+    min-width: 800px;
+    font-size: 0.75em;
+  }
+
+  .tab-btn {
+    padding: 6px 12px;
+  }
+}
