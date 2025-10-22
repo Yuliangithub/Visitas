@@ -22,7 +22,7 @@ async function cargarVisitas() {
 
     // Plantilla tablas (cabecera)
     const tablaHead = `
-      <table>
+      <table class="table">
         <thead>
           <tr>
             <th>Aspecto</th>
@@ -48,11 +48,12 @@ async function cargarVisitas() {
       filasPendientes += `<tr><td colspan="10">Sin aspectos registrados</td></tr>`;
     } else {
       v.aspectos.forEach(a => {
-        const cls =
-          a.estado === "CUMPLE" ? "verde" :
-          a.estado === "PARCIAL" ? "amarillo" :
-          a.estado === "NO CUMPLE" ? "rojo" : "gris";
-
+        const estadoNormalizado = (a.estado ?? "").toString().trim().toUpperCase();
+        const evalId = a.id || a.evaluacion_id || '';
+        
+        // Determinar clase del círculo según el estado
+        const circleClass = estadoNormalizado === "CUMPLE" ? "circle-cumple" : "circle-nocumple";
+        
         let responsable = a.responsable_nombre || "No asignado";
         if (a.responsable_correo) {
           responsable += `<br><small style="color:gray;">${a.responsable_correo}</small>`;
@@ -65,23 +66,32 @@ async function cargarVisitas() {
             .join(", ");
         }
 
+        const evidenciaHallazgo = a.evidencia_hallazgo ? 
+          `<a href="/visitas/uploads/hallazgos/${a.evidencia_hallazgo}" target="_blank">Ver</a>` : 
+          "Sin evidencia";
+
         const fila = `
           <tr>
             <td>${a.aspecto_nombre || "—"}</td>
             <td>${a.aspecto_desc || "—"}</td>
             <td>${a.observacion || "—"}</td>
-            <td><span class="badge ${cls}">${a.estado}</span></td>
+            <td class="td-estado">
+              <span class="circle ${circleClass}" 
+                    data-id="${evalId}" 
+                    data-estado="${estadoNormalizado}"
+                    title="${estadoNormalizado}"></span>
+            </td>
             <td>${a.plazo || "—"}</td>
             <td>${a.recurrente == 1 ? "Sí" : "No"}</td>
             <td>${a.actividad || "—"}</td>
             <td>${responsable}</td>
-            <td>${a.evidencia_hallazgo ? `<a href="/visitas/uploads/hallazgos/${a.evidencia_hallazgo}" target="_blank">Ver</a>` : "Sin evidencia"}</td>
+            <td>${evidenciaHallazgo}</td>
             <td>${evidenciasCumplimiento}</td>
           </tr>
         `;
 
         // Clasifica por fila (no por visita)
-        if ((a.estado ?? "").toString().trim().toUpperCase() === "CUMPLE") {
+        if (estadoNormalizado === "CUMPLE") {
           filasCumplidas += fila;
         } else {
           // PARCIAL y NO CUMPLE y cualquier otro => pendientes
@@ -121,6 +131,77 @@ async function cargarVisitas() {
       contCumplidas.appendChild(grupoCum);
     }
   });
+
+  // Configurar los listeners para los círculos después de cargar todo
+  setupEstadoToggleListeners();
+}
+
+// ===== FUNCIONALIDAD DE CAMBIO DE ESTADO =====
+
+function setupEstadoToggleListeners() {
+  document.querySelectorAll(".circle").forEach(circle => {
+    circle.removeEventListener("click", handleEstadoToggle); // Limpiar listeners previos
+    circle.addEventListener("click", handleEstadoToggle);
+  });
+}
+
+async function handleEstadoToggle(e) {
+  const el = e.currentTarget;
+  const evalId = el.dataset.id;
+  const estadoActual = el.dataset.estado;
+  
+  if (!evalId) {
+    console.error("No hay ID de evaluación para actualizar");
+    return;
+  }
+  
+  // Solo permitir cambiar entre NO CUMPLE y CUMPLE
+  const nuevoEstado = (estadoActual === "NO CUMPLE") ? "CUMPLE" : "NO CUMPLE";
+
+  // Actualizar UI inmediatamente
+  updateEstadoUI(el, nuevoEstado);
+
+  try {
+    const resp = await fetch("backend/evidencias/updateEstado.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: evalId, estado: nuevoEstado })
+    });
+    
+    const json = await resp.json();
+
+    if (!json.success) {
+      // Revertir cambios si falla
+      updateEstadoUI(el, estadoActual);
+      alert("Error guardando estado en BD: " + (json.error ?? "desconocido"));
+      return;
+    }
+
+    // Si pasa a CUMPLE, recargar la página para actualizar las pestañas
+    if (nuevoEstado === "CUMPLE") {
+      setTimeout(() => {
+        cargarVisitas(); // Recargar para actualizar la vista
+      }, 500);
+    }
+
+  } catch (err) {
+    console.error("Error en fetch updateEstado:", err);
+    updateEstadoUI(el, estadoActual);
+    alert("Error al actualizar estado (ver consola).");
+  }
+}
+
+function updateEstadoUI(element, estado) {
+  element.dataset.estado = estado;
+  element.title = estado;
+  element.classList.remove("circle-cumple", "circle-nocumple", "circle-parcial", "circle-noexiste");
+  
+  // Solo manejamos dos estados: CUMPLE (verde) y NO CUMPLE (rojo)
+  if (estado === "CUMPLE") {
+    element.classList.add("circle-cumple");
+  } else {
+    element.classList.add("circle-nocumple");
+  }
 }
 
 /* 🔹 Botones de pestañas */
@@ -138,4 +219,7 @@ document.getElementById("btnCumplidas").addEventListener("click", () => {
   document.getElementById("btnPendientes").classList.remove("active");
 });
 
-cargarVisitas();
+// Inicializar
+document.addEventListener("DOMContentLoaded", function() {
+  cargarVisitas();
+});
