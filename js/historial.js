@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const ESTADOS = {
   CUMPLE: 'CUMPLE',
-  NO_CUMPLE: 'NO CUMPLE', 
+  NO_CUMPLE: 'NO CUMPLE',
   PARCIAL: 'PARCIAL',
   NO_EXISTE: 'NOEXISTE'
 };
@@ -48,7 +48,7 @@ function createThumbnailElement(src, title = "") {
 
 function getEstadoClass(estado, prefix = 'circle') {
   const normalized = normalizeEstado(estado);
-  switch(normalized) {
+  switch (normalized) {
     case ESTADOS.CUMPLE: return `${prefix}-cumple`;
     case ESTADOS.NO_CUMPLE: return `${prefix}-nocumple`;
     case ESTADOS.PARCIAL: return `${prefix}-parcial`;
@@ -240,7 +240,7 @@ async function triggerUpload(evalId, tipo, targetCell) {
 
       const previewUrl = URL.createObjectURL(file);
       const tempThumb = createThumbnailElement(previewUrl, "Previsualización");
-      
+
       if (tipo === TIPOS_EVIDENCIA.HALLAZGO) {
         targetCell.innerHTML = "";
         targetCell.appendChild(tempThumb);
